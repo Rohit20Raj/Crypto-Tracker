@@ -1,20 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import CoinInfo from "./CoinInfo";
 import { useParams } from "react-router-dom";
 import { CryptoState } from "../../CryptoContext";
 import { SingleCoin } from "../config/api";
-import { useTheme } from "@mui/material/styles";
-import CoinInfo from "./CoinInfo";
-import "../styles/Coinpage.css";
 import { LinearProgress, Typography } from "@mui/material";
 import ReactHtmlParser from "react-html-parser";
 import { numberWithCommas } from "./Banner/Carousel";
-
+import "../styles/Coinpage.css";
 
 const Coinpage = () => {
   const { id } = useParams();
   const [coin, setcoin] = useState();
-  const theme = useTheme();
   const { currency, symbol } = CryptoState();
   const fetchCoin = async () => {
     const { data } = await axios.get(SingleCoin(id));
@@ -23,20 +20,11 @@ const Coinpage = () => {
   useEffect(() => {
     fetchCoin();
   }, []);
-  console.log(coin);
-  if(!coin) return <LinearProgress style={{backgroundColor: "gold"}}/>;
+  if (!coin) return <LinearProgress style={{ backgroundColor: "gold" }} />;
 
   return (
     <div
       className="container"
-      // style={{
-      //   display: "flex",
-      //   // flexDirection: "column",
-      //   [theme.breakpoints.down("md")]: {
-      //     flexDirection: "column",
-      //     alignItems: "center",
-      //   },
-      // }}
     >
       <div className="sidebar">
         <img
@@ -56,6 +44,7 @@ const Coinpage = () => {
           {coin?.name}
         </Typography>
         <Typography
+          className="subtitle"
           variant="subtitle1"
           style={{
             width: "100%",
@@ -69,27 +58,36 @@ const Coinpage = () => {
           {ReactHtmlParser(coin?.description.en.split(". ")[0])}.
           <div className="market-data">
             <span>
-              <Typography variant="h5">
-                Rank: &nbsp;
+              <Typography variant="h6">
+                <b>Rank: &nbsp;</b>
                 {coin?.market_cap_rank}
               </Typography>
             </span>
             <span>
-              <Typography variant="h5">
-                Current Price: &nbsp;
-                {symbol}{" "}{numberWithCommas(coin?.market_data.current_price[currency.toLowerCase()])}
+              <Typography variant="h6">
+                <b>Current Price: &nbsp;</b>
+                {symbol}{" "}
+                {numberWithCommas(
+                  coin?.market_data.current_price[currency.toLowerCase()]
+                )}
               </Typography>
             </span>
             <span>
-              <Typography variant="h5">
-                Market Cap: &nbsp;
-                {symbol}{" "}{numberWithCommas(coin?.market_data.market_cap[currency.toLowerCase()].toString().slice(0,-6))} M
+              <Typography variant="h6">
+              <b>Market Cap: &nbsp;</b>
+                {symbol}{" "}
+                {numberWithCommas(
+                  coin?.market_data.market_cap[currency.toLowerCase()]
+                    .toString()
+                    .slice(0, -6)
+                )}{" "}
+                M
               </Typography>
             </span>
           </div>
         </Typography>
       </div>
-      <CoinInfo />
+      <CoinInfo coin={coin}/>
     </div>
   );
 };

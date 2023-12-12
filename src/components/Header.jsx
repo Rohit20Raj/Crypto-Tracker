@@ -19,9 +19,6 @@ const Header = () => {
 
   const darkTheme = createTheme({
     palette: {
-      // main:{
-      //   primary: "#fff",
-      // },
       mode: "dark",
     },
   });
